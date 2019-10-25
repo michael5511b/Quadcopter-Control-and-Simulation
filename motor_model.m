@@ -18,23 +18,32 @@ function [F_motor,M_motor,rpm_motor_dot] = motor_model(F,M,motor_rpm,params)
 %
 %************ MOTOR MODEL ************************
 
+% Setup matrix with thrust and moments
+f = [F;M];
 
-
+% Setup the equations of motion matrix
 ct = params.thrust_coefficient;
 cq = params.moment_scale;
 d = params.arm_length;
-mat = [ct,   ct,    ct,  ct;...
-       0,    d*ct,  0,   -d*ct;...
+mat = [ct,    ct,    ct,   ct;...
+       0,     d*ct,  0,   -d*ct;...
        -d*ct, 0,     d*ct, 0;...
        -cq,   cq,    -cq,  cq];
-f = [F;M];
+
+
+% This can run WAY faster if I figure out the inverse representation of
+% these coefficients on paper and implement it, not using the inv()
+% function every iteration!
 rpm_sqr = inv(mat) * f;
 rpm_des = sqrt(rpm_sqr);
    
+% Calculate actual F and M
 f_actual = mat * rpm_sqr;
 F_motor = f_actual(1, :);
 M_motor = f_actual(2:3, :);
 
+% The motors are a first-ordered controlled subsystem
+% Thus we can get w_dot!
 km = params.motor_constant;
 rpm_motor_dot = km * (rpm_des - motor_rpm);
 

@@ -39,21 +39,13 @@ Kp3 = 20;
 Kd3 = 9;
 
 % Write code here
-
 % Different gain for each dimension
 Kp = [Kp1; Kp2; Kp3];
 Kd = [Kd1; Kd2; Kd3];
 
-% Position errors and Velocity errors
 ep = current_state.pos - desired_state.pos;
 ev = current_state.vel - desired_state.vel;
 
-% We will see if we want to use this or not
-b3 = [0; 0; 1];
 
-F = params.mass * (params.gravity + desired_state.acc - Kp .* ep - Kd .* ev);
-
-% Actual acceleration 
-acc = desired_state.acc - Kp .* ep - Kd .* ev;
 
 end

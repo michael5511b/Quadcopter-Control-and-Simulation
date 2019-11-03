@@ -21,14 +21,14 @@ function [F_motor,M_motor,rpm_motor_dot] = motor_model(F,M,motor_rpm,params)
 % Setup matrix with thrust and moments
 f = [F;M];
 
+
+
+
 % Setup the equations of motion matrix
 ct = params.thrust_coefficient;
 cq = params.moment_scale;
 d = params.arm_length;
-mat = [ct,    ct,    ct,   ct;...
-       0,     d*ct,  0,   -d*ct;...
-       -d*ct, 0,     d*ct, 0;...
-       -cq,   cq,    -cq,  cq];
+mat = [ct, ct, ct, ct; 0, d*ct, 0, -d*ct; -d*ct, 0, d*ct, 0;-cq, cq, -cq, cq];
 
 
 % This can run WAY faster if I figure out the inverse representation of
@@ -36,11 +36,20 @@ mat = [ct,    ct,    ct,   ct;...
 % function every iteration!
 rpm_sqr = inv(mat) * f;
 rpm_des = sqrt(rpm_sqr);
+
+% Watch out for rpms larger or smaller than the limit!
+for i = 1:4
+    if rpm_des(i) > params.rpm_max
+        rpm_sqr(i) = params.rpm_max ^ 2;
+    elseif rpm_des(i) < params.rpm_min
+        rpm_sqr(i) = params.rpm_min ^ 2;
+    end
+end
    
 % Calculate actual F and M
-f_actual = mat * rpm_sqr;
+f_actual = mat * motor_rpm .^ 2;
 F_motor = f_actual(1, :);
-M_motor = f_actual(2:3, :);
+M_motor = f_actual(2 : 4, :);
 
 % The motors are a first-ordered controlled subsystem
 % Thus we can get w_dot!

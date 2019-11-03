@@ -27,15 +27,16 @@ acc_y_des = desired_state.acc(2);
 
 psi_des   = desired_state.rot(3);
 phi_des   = (sin(psi_des) * acc_x_des - cos(psi_des) * acc_y_des) / g; 
-theta_des = (cos(psi_des) * acc_x_des - sin(psi_des) * acc_y_des) / g; 
+theta_des = (cos(psi_des) * acc_x_des + sin(psi_des) * acc_y_des) / g; 
 
 rot = [phi_des; theta_des; psi_des];
 
-R = [cos(psi_des), sin(psi_des);...
-            -sin(psi_des),cos(psi_des)];
-A = [acc_x_des * desired_state.omega(3);y_ddt_d*si_dt_d];
+R = [cos(psi_des), sin(psi_des); -sin(psi_des),cos(psi_des)];
+A = [acc_x_des * desired_state.omega(3); acc_y_des * desired_state.omega(3)];
 w = R * A / g;
 omega = [w(1); w(2); desired_state.omega(3)];
+
+
 
 
 end

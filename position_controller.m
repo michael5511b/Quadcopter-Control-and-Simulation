@@ -29,7 +29,8 @@ function [F, acc] = position_controller(current_state, desired_state, params, qu
 %************  POSITION CONTROLLER ************************
 
 % Example PD gains
-Kp1 = 17;
+%Kp1 = 17;
+Kp1 = 13;
 Kd1 = 6.6;
 
 Kp2 = 17;
@@ -48,10 +49,11 @@ Kd = [Kd1; Kd2; Kd3];
 ep = current_state.pos - desired_state.pos;
 ev = current_state.vel - desired_state.vel;
 
-% We will see if we want to use this or not
-b3 = [0; 0; 1];
+% Don't need this, we will just take F(3)
+% b3 = [0; 0; 1];
 
 F = params.mass * (params.gravity + desired_state.acc - Kp .* ep - Kd .* ev);
+F = F(3);
 
 % Actual acceleration 
 acc = desired_state.acc - Kp .* ep - Kd .* ev;

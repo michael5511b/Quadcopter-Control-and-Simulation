@@ -41,9 +41,11 @@ Kd = [Kdphi; Kdtheta; Kdpsi];
 
 
 % Write code here
-eR = current_state.rot - desired_state.rot;
-eW = current_state.omega - transpose(R) * desired_state.rot * desired_state.omega;
+eR = state.rot - desired_state.rot;
+eW = state.omega - transpose(state.rot) * desired_state.rot * desired_state.omega;
 M = params.inertia * (-Kp .* eR - Kd .* eW);
+
+
 
 end
 

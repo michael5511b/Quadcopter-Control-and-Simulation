@@ -58,10 +58,10 @@ psi   = state(9);
 state_dot = zeros(16, 1); 
 
 % % Non-linear model:
-% Rz = [1,0,0;0,cos(phi),-sin(phi);0,sin(phi),cos(phi)];
-% Ry = [cos(theta),0,sin(theta);0,1,0;-sin(theta),0,cos(theta)];
-% Rx = [cos(psi),-sin(psi),0;sin(psi),cos(psi),0;0,0,1];
-% Reb = Rz * Ry *Rx;
+% Rz = [1, 0, 0; 0, cos(phi), -sin(phi); 0, sin(phi), cos(phi)];
+% Ry = [cos(theta), 0, sin(theta); 0, 1, 0; -sin(theta), 0,cos(theta)];
+% Rx = [cos(psi), -sin(psi), 0; sin(psi), cos(psi), 0; 0,0,1];
+% Reb = Rz * Ry * Rx;
 % Fb = [0; 0; F];
 % Fe = Reb * Fb - [0; 0; mass * g];
 % acc = Fe / mass;
@@ -74,8 +74,10 @@ x_dotdot = g * (theta * cos(psi) + phi * sin(psi));
 y_dotdot = g * (theta * sin(psi) - phi * cos(psi));
 z_dotdot = F / mass - g;
 
+
 % M = I * alpha
-alpha = I \ M;
+alpha = inv(I) * M;
+
 
 % Setup state_dot:
 state_dot(1)     = state(4); % x_dot

@@ -14,6 +14,8 @@
 % Version: this framework was made using MATLAB R2018b. Should function
 % as expected with most recent versions of MATLAB.
 
+
+
 function [] = main(question)
 
 clc
@@ -35,7 +37,7 @@ params = struct(...
     'COM_vertical_offset',     0.05);
 
 %% Get the waypoints for this specific question
-
+question = 2;
 [waypoints, waypoint_times] = lookup_waypoints(question);
 % waypoints are of the form [x, y, z, yaw]
 % waypoint_times are the seconds you should be at each respective waypoint,
@@ -68,7 +70,7 @@ state(9) =   waypoints(4,1); %psi
 state(10) =  0;         %phidot 
 state(11) =  0;         %thetadot
 state(12) =  0;         %psidot
-state(13:16) =  0;      %rpm
+state(13:16) = 0;      %rpm
 
 %% Create a trajectory consisting of desired state at each time step
 
@@ -114,10 +116,9 @@ for iter = 1:max_iter-1
 
     % Get torques from attitude controller
     M = attitude_controller(current_state, desired_state, params, question);
-
+    
     % Motor model
     [F_actual, M_actual, rpm_motor_dot] = motor_model(F, M, current_state.rpm, params);
-    
     % Get the change in state from the quadrotor dynamics
     timeint = time_vec(iter:iter+1);
     [tsave, xsave] = ode45(@(t,s) dynamics(params, s, F_actual, M_actual, rpm_motor_dot), timeint, state);

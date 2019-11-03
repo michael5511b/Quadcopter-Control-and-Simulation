@@ -18,8 +18,12 @@ function [waypoints, waypoint_times] = lookup_waypoints(question)
 
 %Sample waypoints for hover trajectory
 if question == 2
-    waypoints = [0 0.1 0.2 0.3; 0 0 0 0; 0.5 0.5 0.5 0.5; 0 0 0 0];
-    waypoint_times = [0 2 4 6];
+    waypoints = [0,   0.1, 0.2, 0.3;... 
+    			 0,   0,   0,   0;... 
+    			 0.5, 0.5, 0.5, 0.5;... 
+    			 0,   0,   0,   0];
+
+    waypoint_times = [0, 2, 4, 6];
 
 end
 

@@ -70,7 +70,8 @@ state(9) =   waypoints(4,1); %psi
 state(10) =  0;         %phidot 
 state(11) =  0;         %thetadot
 state(12) =  0;         %psidot
-state(13:16) = 0;      %rpm
+% Start the motor at a speed! 
+state(13:16) = [1.53 * 10 ^ 4; 1.53 * 10 ^ 4; 1.53 * 10 ^ 4; 1.53 * 10 ^ 4];      %rpm
 
 %% Create a trajectory consisting of desired state at each time step
 

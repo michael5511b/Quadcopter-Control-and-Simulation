@@ -36,8 +36,7 @@ elseif question == 3
     syms acc(t) vel(t) z(t)
     
     % Ramp shaped profile for acceleration
-    % acc(t) = piecewise((t >= 0 & t < 2), 0.25, (t >= 2 & t < 4), 0, (t >= 4 & t < 6), -0.25, t >= 6, 0);
-    acc(t) = piecewise(t<0, 0,t>=0 & t<2, 0.25, t>=2 & t<4,-0.25,t>=4,0);
+    acc(t) = piecewise(t < 0, 0, (t >= 0 & t < 2), 0.125, (t >= 2 & t < 4), 0, (t >= 4 & t < 6), -0.125, t >= 6, 0);
     % Velocity is the integral of Acceleration
     vel(t) = int(acc(t), 0, t);
     % Position is the integral of Velocity
@@ -52,6 +51,8 @@ elseif question == 3
     
     
     waypoints = [waypts_x; waypts_y; waypts_z; waypts_theta; waypts_vel; waypts_acc];
+    
+
 
     
 end

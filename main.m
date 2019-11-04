@@ -37,7 +37,7 @@ params = struct(...
     'COM_vertical_offset',     0.05);
 
 %% Get the waypoints for this specific question
-question = 2;
+question = 3;
 [waypoints, waypoint_times] = lookup_waypoints(question);
 % waypoints are of the form [x, y, z, yaw]
 % waypoint_times are the seconds you should be at each respective waypoint,

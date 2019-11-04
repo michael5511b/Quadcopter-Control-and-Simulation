@@ -16,7 +16,9 @@ function [waypoints, waypoint_times] = lookup_waypoints(question)
 
 % Write code here
 
-%Sample waypoints for hover trajectory
+% Universal Time-step
+time_step = 0.005;
+
 if question == 2
     waypoints = [0,   0.1, 0.2, 0.3;... 
     			 0,   0,   0,   0;... 
@@ -25,6 +27,33 @@ if question == 2
 
     waypoint_times = [0, 2, 4, 6];
 
+elseif question == 3
+    duration = 10;
+    numOfPoints = duration / time_step;
+    waypoint_times = linspace(0, 10, numOfPoints);
+    
+    % Symbolic fuction
+    syms acc(t) vel(t) z(t)
+    
+    % Ramp shaped profile for acceleration
+    % acc(t) = piecewise((t >= 0 & t < 2), 0.25, (t >= 2 & t < 4), 0, (t >= 4 & t < 6), -0.25, t >= 6, 0);
+    acc(t) = piecewise(t<0, 0,t>=0 & t<2, 0.25, t>=2 & t<4,-0.25,t>=4,0);
+    % Velocity is the integral of Acceleration
+    vel(t) = int(acc(t), 0, t);
+    % Position is the integral of Velocity
+    z(t) = int(vel(t), 0, t);
+    
+    waypts_x = zeros(1, numOfPoints);
+    waypts_y = zeros(1, numOfPoints);
+    waypts_z = z(waypoint_times);
+    waypts_theta = zeros(1, numOfPoints);
+    waypts_vel = vel(waypoint_times);
+    waypts_acc = acc(waypoint_times);
+    
+    
+    waypoints = [waypts_x; waypts_y; waypts_z; waypts_theta; waypts_vel; waypts_acc];
+
+    
 end
 
 end

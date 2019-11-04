@@ -34,7 +34,12 @@ mat = [ct, ct, ct, ct; 0, d*ct, 0, -d*ct; -d*ct, 0, d*ct, 0;-cq, cq, -cq, cq];
 % This can run WAY faster if I figure out the inverse representation of
 % these coefficients on paper and implement it, not using the inv()
 % function every iteration!
-rpm_sqr = inv(mat) * f;
+mat_inv = [1 / (4 * ct), 0, -1 / (2 * ct * d), -1 / (4 * cq);
+           1 / (4 * ct), 1 / (2 * ct * d), 0, 1 / (4 * cq);
+           1 / (4 * ct), 0, 1 / (2 * ct * d), -1 / (4 * cq);
+           1 / (4 * ct), -1 / (2 * ct * d), 0, 1 / (4 * cq)] ;
+% rpm_sqr = inv(mat) * f;
+rpm_sqr = mat_inv * f;
 rpm_des = sqrt(rpm_sqr);
 
 % Watch out for rpms larger or smaller than the limit!

@@ -29,7 +29,9 @@ function [F, acc] = position_controller(current_state, desired_state, params, qu
 %************  POSITION CONTROLLER ************************
 
 % Example PD gains
-%Kp1 = 17;
+% Q2, trying another gain:
+% Kp1 = 17;
+
 Kp1 = 13;
 Kd1 = 6.6;
 

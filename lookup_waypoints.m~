@@ -53,28 +53,29 @@ elseif question == 3
     waypoints = [waypts_x; waypts_y; waypts_z; waypts_theta; waypts_vel; waypts_acc];
     
 elseif question == 5
-    idle_t = 0;
-    takeoff_t = 0;
-    hover_t = 0;
-    track_t = 10;
-    land_t = 0; 
-    numOfPoints = track_t / time_step;
+    % take_off_time = 0;
+    % hover_time = 0;
+    % traj_time = 10;
+    % land_time = 2; 
+    point_num = traj_time/step_size;
     
     %(1) 
-    % waypoint_theta = zeros(1, numOfPoints);
+    % waypoint_theta = zeros(1,point_num);
     
     %(2)
-    waypoint_theta = [zeros(1, 400), deg2rad(15) * ones(1, 1600)];
+    waypoint_theta = [zeros(1,400), deg2rad(15) * ones(1,1600)];
     
-    waypoint_x = zeros(1, numOfPoints);
-    waypoint_y = zeros(1, numOfPoints);
+    waypoint_x = zeros(1,point_num);
+    waypoint_y = zeros(1,point_num);
     % z: 1m to 1.1m
-    waypoint_z = [zeros(1, 400), ones(1, 1600) * 0.1];
-    trajectory = [waypoint_x; waypoint_y; waypoint_z; waypoint_theta];  
+    waypoint_z = [zeros(1,400),ones(1,1600)*0.1];
+    trajectory = [waypoint_x;waypoint_y;waypoint_z;waypoint_theta];  
     
     % state_machine(trajectory, time_step, track_t, idle_t, takeoff_t, hover_t, land_t)
-    [waypoints, waypoint_times] = state_machine(trajectory, time_step, track_t, idle_t, takeoff_t, hover_t, land_t);
+    [waypoints, waypoint_times] = state_machine(trajectory, time_step, 10, 0,land_time,step_size);
     
+
+
     
 end
 

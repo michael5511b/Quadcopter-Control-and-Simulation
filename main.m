@@ -70,7 +70,8 @@ state(10) =  0;         %phidot
 state(11) =  0;         %thetadot
 state(12) =  0;         %psidot
 % Start the motor at a speed! 
-state(13:16) = [1.53 * 10 ^ 4; 1.53 * 10 ^ 4; 1.53 * 10 ^ 4; 1.53 * 10 ^ 4];      %rpm
+% state(13:16) = [1.53 * 10 ^ 4; 1.53 * 10 ^ 4; 1.53 * 10 ^ 4; 1.53 * 10 ^ 4];      %rpm
+state(13:16) = 0;
 
 %% Create a trajectory consisting of desired state at each time step
 

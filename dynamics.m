@@ -73,7 +73,10 @@ state_dot = zeros(16, 1);
 x_dotdot = g * (theta * cos(psi) + phi * sin(psi));
 y_dotdot = g * (theta * sin(psi) - phi * cos(psi));
 z_dotdot = F / mass - g;
-
+if (state(3) == 0) & (F < mass * g)
+    F = mass * g;
+end
+z_dotdot = F / mass - g;
 
 % M = I * alpha
 alpha = inv(I) * M;

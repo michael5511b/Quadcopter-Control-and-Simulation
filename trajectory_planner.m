@@ -38,12 +38,15 @@ for iter = 1:max_iter
     if question == 2
         trajectory_state(1:3, iter) = waypoints(1:3, current_waypoint_number);
         trajectory_state(9, iter) = waypoints(4, current_waypoint_number);
-    elseif question == 3
+    elseif (question == 3) || (question ==6.3)
         trajectory_state(1:3, iter) = waypoints(1:3, current_waypoint_number);
         trajectory_state(9, iter) = waypoints(4, current_waypoint_number);
         trajectory_state(6, iter) = waypoints(5, current_waypoint_number);
         trajectory_state(15, iter) = waypoints(6, current_waypoint_number);
     elseif question == 5
+        trajectory_state(1:3, iter) = waypoints(1:3, current_waypoint_number);
+        trajectory_state(9, iter) = waypoints(4, current_waypoint_number);
+    elseif (question == 6.2) || (question == 6.5)
         trajectory_state(1:3, iter) = waypoints(1:3, current_waypoint_number);
         trajectory_state(9, iter) = waypoints(4, current_waypoint_number);
     end

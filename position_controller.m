@@ -28,7 +28,7 @@ function [F, acc] = position_controller(state, desired_state, params, question)
 %
 %************  POSITION CONTROLLER ************************
 
-if (question == 6.2) || (question == 6.3) || (question == 6.5)
+if (question == 6.2) || (question == 6.3) || (question == 6.51) || (question == 6.52)
     
     I = params.inertia;
     m = params.mass;
@@ -80,7 +80,7 @@ if (question == 6.2) || (question == 6.3) || (question == 6.5)
     elseif question == 6.3
         Q = diag([10, 30, 1000, 10, 10, 10, 10, 10, 20, 1, 1, 1]);
         R = diag([3, 5, 40, 5]);
-    elseif question == 6.5
+    elseif (question == 6.51) || (question == 6.52)
         Q = diag([10, 10, 500, 10, 10, 100, 30, 30, 20, 1, 1, 1]);
         R = diag([10, 10, 50, 20]);
     end
@@ -98,7 +98,7 @@ else
     % Q2, trying another gain:
     % Kp1 = 17;
     % Q3, trying another gain:
-    % Kd3 = 30;
+    % Kp3 = 40;
     Kp1 = 13;
     Kd1 = 6.6;
 

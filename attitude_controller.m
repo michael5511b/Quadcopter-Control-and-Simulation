@@ -25,7 +25,7 @@ function [M] = attitude_controller(state,desired_state,params,question)
 %   M: u2 or moment [M1; M2; M3]
 %
 %************  ATTITUDE CONTROLLER ************************
-if (question == 6.2) || (question == 6.3) || (question == 6.5)
+if (question == 6.2) || (question == 6.3) || (question == 6.51) || (question == 6.52)
     
     I = params.inertia;
     m = params.mass;
@@ -77,7 +77,7 @@ if (question == 6.2) || (question == 6.3) || (question == 6.5)
     elseif question == 6.3
         Q = diag([10, 30, 1000, 10, 10, 10, 10, 10, 20, 1, 1, 1]);
         R = diag([3, 5, 40, 5]);
-    elseif question == 6.5
+    elseif (question == 6.51) || (question == 6.52)
         Q = diag([10, 10, 500, 10, 10, 100, 30, 30, 20, 1, 1, 1]);
         R = diag([10, 10, 50, 20]);
     end
@@ -90,6 +90,8 @@ if (question == 6.2) || (question == 6.3) || (question == 6.5)
 
 else
     % Example PD gains
+    % Q2, trying another gain:
+    % Kptheta = 300;
     Kpphi = 190;
     Kdphi = 30;
 

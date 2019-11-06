@@ -53,7 +53,7 @@ elseif question == 3
     
     waypoints = [waypts_x; waypts_y; waypts_z; waypts_theta; waypts_vel; waypts_acc];
     
-elseif question == 5
+elseif question == 5.1
     idle_t = 0;
     takeoff_t = 0;
     hover_t = 0;
@@ -62,7 +62,24 @@ elseif question == 5
     numOfPoints = track_t / time_step;
     
     %(1) 
-    % waypoint_theta = zeros(1, numOfPoints);
+    waypoints_theta = zeros(1, numOfPoints);
+    
+    waypoints_x = zeros(1, numOfPoints);
+    waypoints_y = zeros(1, numOfPoints);
+    % z: 1m to 1.1m
+    waypoint_z = [zeros(1, 400), ones(1, 1600) * 0.1];
+    trajectory = [waypoints_x; waypoints_y; waypoint_z; waypoints_theta];  
+    
+    % state_machine(trajectory, time_step, track_t, idle_t, takeoff_t, hover_t, land_t)
+    [waypoints, waypoint_times] = state_machine(trajectory, time_step, track_t, idle_t, takeoff_t, hover_t, land_t);
+
+elseif question == 5.2
+    idle_t = 0;
+    takeoff_t = 0;
+    hover_t = 0;
+    track_t = 10;
+    land_t = 0; 
+    numOfPoints = track_t / time_step;
     
     %(2)
     waypoints_theta = [zeros(1, 400), deg2rad(15) * ones(1, 1600)];
@@ -109,7 +126,7 @@ elseif question == 6.3
     
     waypoints = [waypts_x; waypts_y; waypts_z; waypts_theta; waypts_vel; waypts_acc];
     
-elseif question == 6.5
+elseif question == 6.51
     idle_t = 0;
     takeoff_t = 0;
     hover_t = 0;
@@ -118,7 +135,23 @@ elseif question == 6.5
     numOfPoints = track_t / time_step;
     
     %(1) 
-    % waypoint_theta = zeros(1, numOfPoints);
+    waypoints_theta = zeros(1, numOfPoints);
+    
+    waypoints_x = zeros(1, numOfPoints);
+    waypoints_y = zeros(1, numOfPoints);
+    % z: 1m to 1.1m
+    waypoint_z = [zeros(1, 400), ones(1, 1600) * 0.1];
+    trajectory = [waypoints_x; waypoints_y; waypoint_z; waypoints_theta];  
+    
+    % state_machine(trajectory, time_step, track_t, idle_t, takeoff_t, hover_t, land_t)
+    [waypoints, waypoint_times] = state_machine(trajectory, time_step, track_t, idle_t, takeoff_t, hover_t, land_t);
+elseif question == 6.52
+        idle_t = 0;
+    takeoff_t = 0;
+    hover_t = 0;
+    track_t = 10;
+    land_t = 0; 
+    numOfPoints = track_t / time_step;
     
     %(2)
     waypoints_theta = [zeros(1, 400), deg2rad(15) * ones(1, 1600)];
@@ -130,14 +163,14 @@ elseif question == 6.5
     trajectory = [waypoints_x; waypoints_y; waypoint_z; waypoints_theta];  
     
     % state_machine(trajectory, time_step, track_t, idle_t, takeoff_t, hover_t, land_t)
-    [waypoints, waypoint_times] = state_machine(trajectory, step_t, track_t, idle_t, takeoff_t, hover_t, land_t);
-    
+    [waypoints, waypoint_times] = state_machine(trajectory, time_step, track_t, idle_t, takeoff_t, hover_t, land_t);
 elseif question == 7
     idle_t = 0;
     takeoff_t = 1;
     hover_t = 2;
-    track_t = 5;
-    land_t = 2; 
+    % Change this:
+    track_t = 1;
+    land_t = 5; 
 
     numOfPoints = track_t / time_step;
     
@@ -147,7 +180,7 @@ elseif question == 7
     waypoints_theta = zeros(1, numOfPoints);
     
     trajectory = [waypoints_x; waypoints_y; waypoints_z; waypoints_theta];
-    [waypoints, waypoint_times] = state_machine(trajectory, step_t, track_t, idle_t, takeoff_t, hover_t, land_t);
+    [waypoints, waypoint_times] = state_machine(trajectory, time_step, track_t, idle_t, takeoff_t, hover_t, land_t);
     
 elseif question == 8.1
     r1 = 2;  
@@ -168,18 +201,19 @@ elseif question == 8.1
     waypoints_z = ones(1, numOfPoints) * height;
     waypoints_theta = zeros(1, numOfPoints);
     trajectory = [waypoints_x; waypoints_y; waypoints_z; waypoints_theta];   
-    [waypoints, waypoint_times] = state_machine(trajectory, step_t, track_t, idle_t, takeoff_t, hover_t,land_t);
+    [waypoints, waypoint_times] = state_machine(trajectory, time_step, track_t, idle_t, takeoff_t, hover_t,land_t);
     
     % Specify Velocity
     % tangent velocity
-    x_dot = linspace(0, 1, numOfPoints);
+    % x_dot = linspace(0, 1, numOfPoints);
+    x_dot = r1 / sqrt(r1 ^ 2 + r2 ^ 2) * cos(t);
     y_dot = r2 / sqrt(r1 ^ 2 + r2 ^ 2) * sin(t);
     waypoints_x_dt = zeros(1, size(waypoints, 2));
     waypoints_y_dt = zeros(1, size(waypoints, 2));
     
     % Only during tracking time will we specify velocity
-    waypoints_x_dt(1, (takeoff_t + hover_t) / step_t + 1 : (takeoff_t + hover_t + track_t) / step_t) = x_dot;
-    waypoints_y_dt(1, (takeoff_t + hover_t) / step_t + 1 : (takeoff_t + hover_t + track_t) / step_t) = y_dot;
+    waypoints_x_dt(1, (takeoff_t + hover_t) / time_step + 1 : (takeoff_t + hover_t + track_t) / time_step) = x_dot;
+    waypoints_y_dt(1, (takeoff_t + hover_t) / time_step + 1 : (takeoff_t + hover_t + track_t) / time_step) = y_dot;
     waypoints = [waypoints; waypoints_x_dt; waypoints_y_dt];
     
 elseif question == 8.2
@@ -274,8 +308,8 @@ elseif question == 9.1
     
     waypoints_x_dt = zeros(1,size(waypoints,2));
     waypoints_y_dt = zeros(1,size(waypoints,2));
-    waypoints_x_dt(1, (takeoff_t + hover_t) / step_t + 1 : (takeoff_t + hover_t + track_t) / step_t) = x_dot;
-    waypoints_y_dt(1, (takeoff_t + hover_t) / step_t + 1 : (takeoff_t + hover_t + track_t) / step_t) = y_dot;
+    waypoints_x_dt(1, (takeoff_t + hover_t) / time_step + 1 : (takeoff_t + hover_t + track_t) / time_step) = x_dot;
+    waypoints_y_dt(1, (takeoff_t + hover_t) / time_step + 1 : (takeoff_t + hover_t + track_t) / time_step) = y_dot;
     waypoints = [waypoints; waypoints_x_dt; waypoints_y_dt];
     
 elseif question == 9.2
@@ -328,7 +362,7 @@ elseif question == 9.2
     traj_stack = [traj_xyz, traj_xyz, traj_xyz, traj_xyz];
     trajectory = [traj_stack; waypoints_theta];
     track_t = track_t * 4;
-    [waypoints, waypoint_times] = state_machine(trajectory, step_t, track_t, idle_t, takeoff_t, hover_t,land_t);
+    [waypoints, waypoint_times] = state_machine(trajectory, time_step, track_t, idle_t, takeoff_t, hover_t,land_t);
 
     waypoints_x_dt = zeros(1,size(waypoints,2));
     waypoints_y_dt = zeros(1,size(waypoints,2));

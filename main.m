@@ -139,6 +139,8 @@ for iter = 1:max_iter-1
 end
 
 plot_quadrotor_errors(actual_state_matrix, actual_desired_state_matrix, time_vec)
+if (question == 8.1) || (question == 8.2) || (question == 9.1) || (question == 9.2)
+    plot_cumulative_error(actual_state_matrix, actual_desired_state_matrix, time_vec);
 
 end
 

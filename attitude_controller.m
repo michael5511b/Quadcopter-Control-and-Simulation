@@ -25,37 +25,14 @@ function [M] = attitude_controller(state,desired_state,params,question)
 %   M: u2 or moment [M1; M2; M3]
 %
 %************  ATTITUDE CONTROLLER ************************
-
-% Example PD gains
-Kpphi = 190;
-Kdphi = 30;
-
-Kptheta = 198;
-Kdtheta = 30;
-
-Kppsi = 80;
-Kdpsi = 17.88;
-
-Kp = [Kpphi; Kptheta; Kppsi];
-Kd = [Kdphi; Kdtheta; Kdpsi];
-
-
-% Write code here
-eR = state.rot - desired_state.rot;
-eW = state.omega - transpose(state.rot) * desired_state.rot * desired_state.omega;
-M = params.inertia * (-Kp .* eR - Kd .* eW);
-
-% In the A B C, the x' y' z' and phi theta psi states are flipped
-
-
 if (question == 6.2) || (question == 6.3) || (question == 6.5)
     
     I = params.inertia;
     m = params.mass;
     g = params.gravity;
-    psidot = state.omega(3);
-    thetadot = state.omega(2);  
-    phidot = state.omega(1);
+    phi_dot = state.omega(1);
+    theta_dot = state.omega(2);  
+    psi_dot = state.omega(3);
     phi = state.rot(1);
     theta = state.rot(2);
     psi = state.rot(3);
@@ -63,55 +40,73 @@ if (question == 6.2) || (question == 6.3) || (question == 6.5)
     A = [0 0 0 0 0 0 1 0 0 0 0 0;...
          0 0 0 0 0 0 0 1 0 0 0 0;...
          0 0 0 0 0 0 0 0 1 0 0 0;...
-         
          0 0 0 0 0 0 0 0 0 1 0 0;...
          0 0 0 0 0 0 0 0 0 0 1 0;...
          0 0 0 0 0 0 0 0 0 0 0 1;...
          0 0 0 g * sin(psi) g * cos(psi) 0 0 0 0 0 0 0;...
          0 0 0 -g * cos(psi) g * sin(psi) 0 0 0 0 0 0 0;...
          0 0 0 0 0 0 0 0 0 0 0 0;...
-         
-         0 0 0 (I(5) - I(9)) * psidot.^2/I(1) 0 0 0 0 0 0 (I(5) - I(9)) * psidot / I(1) 0;...
-         0 0 0 0 (I(1) - I(5)) * psidot.^2/I(5) 0 0 0 0 -(I(1)-I(5))* psidot/I(5) 0 0;...
+         0 0 0 (I(5) - I(9)) * psi_dot.^2/I(1) 0 0 0 0 0 0 (I(5) - I(9)) * psi_dot / I(1) 0;...
+         0 0 0 0 (I(1) - I(5)) * psi_dot.^2/I(5) 0 0 0 0 -(I(1)-I(5))* psi_dot/I(5) 0 0;...
          0 0 0 0 0 0 0 0 0 0 0 0];
 
-B = [0 0 0 0;...
-    0 0 0 0;...
-    0 0 0 0;...
+    B = [0 0 0 0;...
+        0 0 0 0;...
+        0 0 0 0;...
+        0 0 0 0;...
+        0 0 0 0;...
+        0 0 0 0;...
+        0 0 0 0;...
+        0 0 0 0;...
+        1/m 0 0 0;...
+        0 1/I(1) 0 0;...
+        0 0 1/I(5) 0;...
+        0 0 0 1/I(9)];
     
-    0 0 0 0;...
-    0 0 0 0;...
-    0 0 0 0;...
+    C = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;...
+         0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;...
+         0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0;...
+         0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+
+    Q = zeros(1, 12);
+    R = zeros(1, 4);
     
-    0 0 0 0;...
-    0 0 0 0;...
-    1/m 0 0 0;...
-    
-    0 1/I(1) 0 0;...
-    0 0 1/I(5) 0;...
-    0 0 0 1/I(9)];
+    if question == 6.2
+        Q = diag([500, 200, 200, 100, 100, 100, 1, 1, 1, 1, 1, 1]);
+        R = diag([80, 30, 75, 15]);
+    elseif question == 6.3
+        Q = diag([10, 30, 1000, 10, 10, 10, 10, 10, 20, 1, 1, 1]);
+        R = diag([3, 5, 40, 5]);
+    elseif question == 6.5
+        Q = diag([10, 10, 500, 10, 10, 100, 30, 30, 20, 1, 1, 1]);
+        R = diag([10, 10, 50, 20]);
+    end
 
-C = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;...
-     0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;...
-     0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0;...
-     0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
- 
-Q = diag([500, 100, 300, 100, 100, 100, 1, 1, 1, 1, 1, 1]);
+    K = lqr(A, B, Q, R);
 
-R = diag([80,40,70,20]);
+    v = -inv(C * inv(A - B * K) * B) * [desired_state.pos; desired_state.rot(3)];
+    u = v - K * [state.pos; state.rot; state.vel; state.omega] + [m * g; 0; 0; 0];
+    M = u(2:4);
 
-K = lqr(A, B, Q, R);
+else
+    % Example PD gains
+    Kpphi = 190;
+    Kdphi = 30;
 
-v = -inv(C * inv(A - B * K) * B) * [desired_state.pos;desired_state.rot(3)];
-u = v - K * [state.pos; state.rot;state.vel;state.omega] + [m * g; 0; 0; 0];
-M = u(2:4);
+    Kptheta = 198;
+    Kdtheta = 30;
 
+    Kppsi = 80;
+    Kdpsi = 17.88;
 
+    Kp = [Kpphi; Kptheta; Kppsi];
+    Kd = [Kdphi; Kdtheta; Kdpsi];
 
+    % Write code here
+    eR = state.rot - desired_state.rot;
+    eW = state.omega - transpose(state.rot) * desired_state.rot * desired_state.omega;
+    M = params.inertia * (-Kp .* eR - Kd .* eW);
 
 end
-
-
-
 end
 

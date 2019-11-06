@@ -24,14 +24,13 @@ function [waypoints, waypoint_times] = state_machine(trajectory, time_step, trac
     waypoints_theta = zeros(1, numOfPoints_takeoff);
     
     waypoints_takeoff = [waypoints_x; waypoints_y; waypoints_z; waypoints_theta];
-    size(waypoints_takeoff)
+
     
     %% Hover
     % hover takes place after take off and before landing
     waypoints_after_takeoff = generate_hover_waypoints(trajectory(4, 1), trajectory(3, 1), numOfPoints_hover);
     waypoints_before_land = generate_hover_waypoints(trajectory(4, end), trajectory(3, end), numOfPoints_hover);
-    size(waypoints_after_takeoff)
-    size(waypoints_before_land)
+
 
     %% Land 
     hover_z = trajectory(3,end);
@@ -41,7 +40,7 @@ function [waypoints, waypoint_times] = state_machine(trajectory, time_step, trac
     waypoints_theta = linspace(trajectory(4, end), 0, numOfPoints_land);
     
     waypoints_land = [waypoints_x; waypoints_y; waypoints_z; waypoints_theta];
-    size(waypoints_land)
+
 
 
     %% Combine
